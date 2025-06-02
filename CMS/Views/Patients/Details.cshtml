@@ -1,0 +1,161 @@
+﻿@model CMS.Models.Patient
+@using System.Security.Claims
+
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+
+}
+
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h1 class="h3 mb-0 text-gray-800">Patient Details</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="d-flex justify-content-between card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Patient Details (@Html.DisplayFor(model => model.FullName))</h5>
+			@if (User.IsInRole("Admin"))
+			{
+				<a asp-action="Delete" asp-route-id="@Model?.Id" class="text-white mr-1">
+					<i class="fas fa-trash"></i>
+				</a>
+			}
+		</div>
+
+		<div class="card-body">
+			<p class="text-muted mb-4">
+				Review the patient's information below. To make changes, click the <strong>Edit</strong> button.
+			</p>
+
+			<dl class="row">
+				<dt class="col-sm-3">Full Name</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.FullName)</dd>
+
+				<dt class="col-sm-3">Date of Birth</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.DateOfBirth)</dd>
+
+				<dt class="col-sm-3">Gender</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.Gender)</dd>
+
+				<dt class="col-sm-3">Contact Number</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.ContactNumber)</dd>
+
+				<dt class="col-sm-3">Address</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.Address)</dd>
+
+				<dt class="col-sm-3">Archived</dt>
+				<dd class="col-sm-9">@((Model.IsArchived) ? "Yes" : "No")</dd>
+
+				<dt class="col-sm-3">Created At</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedAt)</dd>
+			</dl>
+
+			<div class="d-flex justify-content-between mt-4">
+				<a asp-action="Index" class="btn btn-outline-secondary">
+					<i class="fas fa-arrow-left"></i> Back to List
+				</a>
+				<div class="d-flex justify-content-between">
+					@if (!User.IsInRole("Doctor"))
+					{
+						<a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary px-4 mr-2">
+							<i class="fas fa-edit"></i> Edit
+						</a>
+					}
+					@if (User.IsInRole("Admin") && Model?.IsArchived == true)
+					{
+						<form asp-action="Unarchive" asp-route-id="@Model.Id" method="post" style="display:inline">
+							<button type="submit" class="btn btn-secondary px-3">
+								<i class="fas fa-box"></i> Unarchive
+							</button>
+						</form>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">@Html.DisplayFor(model => model.FullName)'s Today Appointment</h5>
+		</div>
+
+		<div class="card-body">
+			@if (Model.Appointments != null && Model.Appointments.Any())
+			{
+				foreach (var appointment in Model.Appointments)
+				{
+					var doctor = appointment.Doctor;
+					if (doctor != null)
+					{
+						<dl class="row border-bottom pb-3 mb-3">
+							<dt class="col-sm-3">Doctor Name</dt>
+							<dd class="col-sm-9">@doctor.FullName</dd>
+
+							<dt class="col-sm-3">Email</dt>
+							<dd class="col-sm-9">@doctor.Email</dd>
+
+							<dt class="col-sm-3">Contact Number</dt>
+							<dd class="col-sm-9">@(!string.IsNullOrEmpty(doctor.ContactNumber) ? doctor.ContactNumber : "-")</dd>
+
+							<dt class="col-sm-3">Appointment Date</dt>
+							<dd class="col-sm-9">@appointment.AppointmentDate.ToString("f")</dd>
+
+							<dt class="col-sm-3">Status</dt>
+							<dd class="col-sm-9">@appointment.Status</dd>
+						</dl>
+					}
+				}
+			}
+			else
+			{
+				<p class="text-muted">No appointment today found for this patient.</p>
+			}
+		</div>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">@Model.FullName's Visit History</h5>
+		</div>
+
+		<div class="card-body">
+			@if (Model.Visits != null && Model.Visits.Any())
+			{
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Visit Date</th>
+							<th>Doctor</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var visit in Model.Visits.OrderByDescending(v => v.VisitDate))
+						{
+							string doctorUserId = visit.Doctor?.UserId ?? "";
+							<tr>
+								<td>
+									<a href="@Url.Action("Details", "Visits", new { id = visit.Id })">
+										@visit.VisitDate.ToString("f")
+									</a>
+								</td>
+								<td>@(doctorUserId == currentUserId ? "Me" : visit.Doctor?.FullName)</td>
+							</tr>
+						}
+
+					</tbody>
+				</table>
+			}
+			else
+			{
+				<p class="text-muted">No visits found for this patient.</p>
+			}
+
+		</div>
+	</div>
+
+</div>
+

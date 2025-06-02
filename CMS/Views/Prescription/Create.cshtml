@@ -1,0 +1,96 @@
+﻿@using CMS.ViewModels
+@model PrescriptionCreateViewModel
+
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h1 class="h3 mb-0 text-gray-800">Create Prescription</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Give new prescription.</h5>
+		</div>
+		<div class="card-body">
+			<p class="text-muted mb-4">
+				All fields are required. Kindly fill out the form completely before clicking <strong>Create</strong>.
+			</p>
+			<form asp-action="Create" method="post">
+				<div asp-validation-summary="All" class="text-danger"></div>
+				<input asp-for="VisitId" type="hidden" />
+				<input asp-for="DentalExaminationId" type="hidden" />
+
+				<h4>Select Inventory Items</h4>
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Select</th>
+							<th>Item</th>
+							<th>Unit Price</th>
+							<th>Quantity</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < Model.SelectedItems.Count; i++)
+						{
+							var item = Model.SelectedItems[i];
+							var isDisabled = !item.Selected ? "disabled" : "";
+							<tr>
+								<td>
+									<input type="checkbox" name="SelectedItems[@i].Selected" value="true" @(item.Selected ? "checked" : "") />
+									<input type="hidden" name="SelectedItems[@i].InventoryItemId" value="@item.InventoryItemId" />
+									<input type="hidden" name="SelectedItems[@i].ItemName" value="@item.ItemName" />
+									<input type="hidden" name="SelectedItems[@i].UnitPrice" value="@item.UnitPrice" />
+								</td>
+								<td>@item.ItemName</td>
+								<td>@item.UnitPrice.ToString("C")</td>
+								<td>
+									<input type="number"
+										   name="SelectedItems[@i].Quantity"
+										   value="@(item.Quantity ?? 0)"
+										   min="1"
+										   class="form-control"
+										   @isDisabled />
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+
+				<div class="my-3">
+					<label>Instructions</label>
+					<textarea asp-for="Instructions" class="form-control"></textarea>
+				</div>
+
+			   <div class="d-flex justify-content-end">
+					<button type="submit" class="btn btn-primary">Create Prescription</button>
+			   </div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
+
+	<script>
+		document.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox, index) {
+			checkbox.addEventListener('change', function () {
+				const quantityInput = checkbox.closest('tr').querySelector('input[type="number"]');
+				quantityInput.disabled = !checkbox.checked;
+				if (!checkbox.checked) {
+					quantityInput.value = ''; // clear value if unchecked
+				}
+			});
+		});
+	</script>

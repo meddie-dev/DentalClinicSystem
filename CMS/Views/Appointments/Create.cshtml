@@ -1,0 +1,233 @@
+﻿@model CMS.Models.Appointment
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Appointment</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">New Appointment</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-4">
+                All fields are required. Kindly fill out the form completely before clicking <strong>Create</strong>.
+            </p>
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <div id='calendar'></div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PatientId" class="control-label"></label>
+                    <select asp-for="PatientId" class="form-control" asp-items="@(ViewBag.PatientId as SelectList)">
+                        <option value="">-- Select Patient --</option>
+                    </select>
+                    <span asp-validation-for="PatientId" class="text-danger"></span>
+                </div>
+                <div class="form-group d-none">
+                    <label asp-for="AppointmentDate" class="control-label"></label>
+                    <input asp-for="AppointmentDate" class="form-control" />
+                    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DoctorId" class="control-label"></label>
+                    <select asp-for="DoctorId" class="form-control" asp-items="@(ViewBag.DoctorId as SelectList)">
+                        <option value="">-- Select Doctor --</option>
+                    </select>
+                    <span asp-validation-for="DoctorId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Notes" class="control-label"></label>
+                    <input asp-for="Notes" class="form-control" placeholder="-"/>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label"></label>
+                    <select asp-for="Status" class="form-control" asp-items="@(ViewData["StatusList"] as SelectList)"></select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-4 d-flex justify-content-between flex-row-reverse">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary ml-2">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Time Modal -->
+<div class="modal fade" id="timeModal" tabindex="-1" role="dialog" aria-labelledby="timeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="timeModalLabel">Select Time for Appointment</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="time" id="appointmentTime" class="form-control" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmTime" class="btn btn-primary">Set Time</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+<script>
+       document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var dateInput = document.querySelector('input[name="AppointmentDate"]');
+        var doctorSelect = document.querySelector('select[name="DoctorId"]'); // Doctor dropdown
+        let selectedDate = null;
+        let tempEvent = null;
+        let dateCountMap = {};
+
+        // Fetch counts once
+        fetch('/Appointments/GetAppointmentsJson')
+            .then(res => res.json())
+            .then(events => {
+                events.forEach(event => {
+                    const match = event.title.match(/^(\d+)/);
+                    if (match) {
+                        dateCountMap[event.start] = parseInt(match[1]);
+                    } else {
+                        dateCountMap[event.start] = 0;
+                    }
+                });
+
+                initCalendar();
+            })
+            .catch(err => {
+                console.error('Failed to load appointment counts:', err);
+                initCalendar(); // still init calendar on error
+            });
+
+        function initCalendar() {
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                selectable: true,
+                validRange: {
+                    start: new Date().toISOString().split('T')[0]
+                },
+                events: '/Appointments/GetAppointmentsJson',
+
+                selectAllow: function (selectInfo) {
+                    let count = dateCountMap[selectInfo.startStr] || 0;
+                    return count < 5;
+                },
+
+                select: function (info) {
+                    selectedDate = info.startStr;
+                    document.getElementById('appointmentTime').value = '';
+                    $('#timeModal').modal('show');
+
+                    // Clear doctor dropdown while waiting
+                    if (doctorSelect) {
+                        doctorSelect.innerHTML = '<option>Loading doctors...</option>';
+                    }
+
+                    // Fetch available doctors for selected date
+                    fetch(`/Appointments/GetAvailableDoctors?date=${selectedDate}`)
+                        .then(res => res.json())
+                        .then(doctors => {
+                            if (doctorSelect) {
+                                doctorSelect.innerHTML = '<option value="">-- Select Doctor --</option>';
+                                doctors.forEach(doc => {
+                                    const option = document.createElement('option');
+                                    option.value = doc.id;
+                                    option.textContent = doc.fullName;
+                                    doctorSelect.appendChild(option);
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Failed to load doctors:', err);
+                            if (doctorSelect) {
+                                doctorSelect.innerHTML = '<option value="">Error loading doctors</option>';
+                            }
+                        });
+                },
+
+                datesSet: function () {
+                    setTimeout(() => {
+                        document.querySelectorAll('.fully-booked-label').forEach(el => el.remove());
+                        document.querySelectorAll('.fc-day-disabled').forEach(el => {
+                            el.classList.remove('fc-day-disabled');
+                            el.style.pointerEvents = '';
+                            el.style.opacity = '';
+                            el.style.backgroundColor = '';
+                            el.style.cursor = '';
+                        });
+
+                        Object.entries(dateCountMap).forEach(([date, count]) => {
+                            if (count >= 5) {
+                                const dayCell = document.querySelector(`.fc-day[data-date="${date}"]`);
+                                if (dayCell && !dayCell.querySelector('.fully-booked-label')) {
+                                    const label = document.createElement('div');
+                                    label.textContent = 'Fully Booked';
+                                    label.className = 'fully-booked-label';
+                                    dayCell.appendChild(label);
+
+                                    dayCell.classList.add('fc-day-disabled');
+                                    dayCell.style.pointerEvents = 'none';
+                                    dayCell.style.opacity = '0.5';
+                                    dayCell.style.backgroundColor = '#f0f0f0';
+                                    dayCell.style.cursor = 'not-allowed';
+                                }
+                            }
+                        });
+                    }, 0);
+                }
+            });
+
+            calendar.render();
+
+            document.getElementById('confirmTime').addEventListener('click', function () {
+                const timeVal = document.getElementById('appointmentTime').value;
+
+                if (!timeVal) {
+                    alert('Please select a time.');
+                    return;
+                }
+
+                const dateTime = `${selectedDate}T${timeVal}`;
+                if (dateInput) {
+                    dateInput.value = dateTime;
+                }
+
+                if (tempEvent) {
+                    tempEvent.remove();
+                }
+
+                tempEvent = calendar.addEvent({
+                    title: 'Your Appointment',
+                    start: dateTime,
+                    backgroundColor: '#007bff',
+                    borderColor: '#004085',
+                    textColor: '#ffffff'
+                });
+
+                $('#timeModal').modal('hide');
+                calendar.refetchEvents();
+            });
+        }
+    });
+
+</script>
+

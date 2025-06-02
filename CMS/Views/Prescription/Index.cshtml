@@ -1,0 +1,65 @@
+﻿@model List<CMS.ViewModels.ExaminationIndexViewModel>
+
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+		<h1 class="h3 mb-0 text-gray-800">Manage Prescription</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Prescription Records </h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+                <table class="table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Visit Date</th>
+							<th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @foreach (var exam in Model)
+                        {
+                            <tr>
+                                 <td>
+                                    @if (!exam.BillingExists)
+                                    {
+                                        <a asp-action="Create" asp-route-examId="@exam.ExaminationId">@exam.PatientName</a>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: gray; text-decoration: none;">@exam.PatientName</span>
+                                    }
+                                </td>
+
+                                <td>@exam.ExaminationDate.ToShortDateString()</td>
+                                <td>
+                                    @if (exam.BillingExists)
+                                    {
+                                        <a asp-action="Details" asp-route-examId="@exam.ExaminationId">Details</a>
+
+                                    }
+                                    else
+                                    {
+                                        <span style="color: gray; text-decoration: none;">Details</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+			</div>
+		</div>
+	</div>
+</div>

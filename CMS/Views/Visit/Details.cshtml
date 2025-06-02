@@ -1,0 +1,154 @@
+﻿@model CMS.Models.Visit
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Get billing dictionary passed from controller
+    var billingByPrescriptionId = (Dictionary<int, CMS.Models.Billing>)ViewData["BillingByPrescriptionId"];
+}
+
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Details for @Html.DisplayFor(m => m.Patient.FullName)</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="d-flex justify-content-between card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">Visit Details</h5>
+        </div>
+
+        <div class="card-body">
+            <p class="text-muted mb-4">
+                Review the patient's information below. To make changes, click the <strong>Edit</strong> button.
+            </p>
+
+            <dl class="row">
+                <dt class="col-sm-3">Visit Date:</dt>
+                <dd class="col-sm-9">@Model.VisitDate.ToString("f")</dd>
+
+                <dt class="col-sm-3">Patient</dt>
+                <dd class="col-sm-9">@Model.Patient.FullName</dd>
+
+                <dt class="col-sm-3">Doctor</dt>
+                <dd class="col-sm-9">@Model.Doctor.FullName</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">Dental Examinations</h5>
+        </div>
+
+        <div class="card-body">
+            @if (Model.DentalExaminations != null && Model.DentalExaminations.Any())
+            {
+                <dl class="row">
+                    @foreach (var exam in Model.DentalExaminations)
+                    {
+                        <dt class="col-sm-3">Date:</dt>
+                        <dd class="col-sm-9">@exam.ExaminationDate.ToShortDateString()</dd>
+
+                        <dt class="col-sm-3">Notes:</dt>
+                        <dd class="col-sm-9">@exam.Notes</dd>
+                    }
+                </dl>
+            }
+            else
+            {
+                <p>No dental examinations for this visit.</p>
+            }
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">Prescriptions</h5>
+        </div>
+
+        <div class="card-body">
+            @if (Model.Prescriptions != null && Model.Prescriptions.Any())
+            {
+                foreach (var prescription in Model.Prescriptions)
+                {
+                    <div class="mb-4">
+                        <p><strong>Instructions:</strong> @prescription.Instructions</p>
+
+                        <h5>Items</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in prescription.PrescriptionItems)
+                                {
+                                    <tr>
+                                        <td>@item.InventoryItem.ItemName</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.UnitPrice.ToString("C")</td>
+                                        <td>@item.Subtotal.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No prescriptions for this visit.</p>
+            }
+        </div>
+    </div>
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">Billing</h5>
+        </div>
+
+        <div class="card-body">
+            @if (billingByPrescriptionId != null && billingByPrescriptionId.Any())
+            {
+                foreach (var kvp in billingByPrescriptionId)
+                {
+                    var prescriptionId = kvp.Key;
+                    var billing = kvp.Value;
+
+                    <div class="mb-4">
+                        <h6>Prescription ID: @prescriptionId</h6>
+                        <p><strong>Invoice Date:</strong> @billing.InvoiceDate.ToShortDateString()</p>
+                        <p><strong>Total Amount:</strong> @billing.TotalAmount.ToString("C")</p>
+
+                        <h6>Payments</h6>
+                        @if (billing.Payments != null && billing.Payments.Any())
+                        {
+                            <ul>
+                                @foreach (var payment in billing.Payments)
+                                {
+                                    <li>@payment.PaymentDate.ToShortDateString() - @payment.AmountPaid.ToString("C")</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>No payments recorded.</p>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No billing records for this visit.</p>
+            }
+        </div>
+    </div>
+
+</div>

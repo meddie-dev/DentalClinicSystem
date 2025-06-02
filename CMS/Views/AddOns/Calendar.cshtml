@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CMS.Models.Appointment>
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Calendar</h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+                <div id="calendar"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		 var calendarEl = document.getElementById('calendar');
+		 var calendar = new FullCalendar.Calendar(calendarEl, {
+		   initialView: 'multiMonthYear'
+		 });
+		 calendar.render();
+	   });
+
+</script>

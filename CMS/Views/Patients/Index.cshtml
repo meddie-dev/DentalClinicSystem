@@ -1,0 +1,64 @@
+﻿@model IEnumerable<CMS.Models.Patient>
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+		<h1 class="h3 mb-0 text-gray-800">Manage Patient</h1>
+		@if (!User.IsInRole("Doctor"))
+		{
+			<a asp-action="Create" asp-controller="Patients" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+				<i class="fa fa-plus pr-1 py-1" aria-hidden="true"></i>
+				Create New
+			</a>
+		}
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Patient Records </h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>@Html.DisplayNameFor(model => model.First().FullName)</th>
+							<th>@Html.DisplayNameFor(model => model.First().DateOfBirth)</th>
+							<th>@Html.DisplayNameFor(model => model.First().Gender)</th>
+							<th>@Html.DisplayNameFor(model => model.First().ContactNumber)</th>
+							<th>@Html.DisplayNameFor(model => model.First().Address)</th>
+							<th>@Html.DisplayNameFor(model => model.First().CreatedAt)</th>
+							
+						</tr>
+					</thead>
+					
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td>
+									<a asp-action="Details" asp-route-id="@item.Id" class="text-primary">
+										@Html.DisplayFor(modelItem => item.FullName)
+									</a>
+								</td>
+								<td>@Html.DisplayFor(modelItem => item.DateOfBirth)</td>
+								<td>@Html.DisplayFor(modelItem => item.Gender)</td>
+								<td>@Html.DisplayFor(modelItem => item.ContactNumber)</td>
+								<td>@Html.DisplayFor(modelItem => item.Address)</td>
+								<td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+								
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,82 @@
+﻿@model IEnumerable<CMS.Models.Visit>
+@using System.Security.Claims
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+}
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+@if (!Model.Any())
+{
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+            <h1 class="h3 mb-0 text-gray-800">Dental Examinations</h1>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-primary text-white">
+                <h5 class="m-0 font-weight-bold">Available Patients (Today)</h5>
+            </div>
+            <div class="card-body text-center mt-4">
+                <p>No visits for today.</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+
+	<div class="container-fluid">
+		<!-- Page Heading -->
+		<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+            <h1 class="h3 mb-0 text-gray-800">Dental Examinations</h1>
+		</div>
+
+		<div class="card shadow mb-4">
+			<div class="card-header py-3 bg-primary text-white">
+				<h5 class="m-0 font-weight-bold">Available Patients (Today)</h5>
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Visit Date</th>
+                                <th>Patient Name</th>
+                                <th>Doctor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var visit in Model)
+                            {
+                                string doctorUserId = visit.Doctor?.UserId ?? "";
+
+                                <tr>
+                                    <td>
+                                        <a asp-controller="DentalExaminations"
+                                           asp-action="CreateOrEdit"
+                                           asp-route-patientId="@visit.PatientId"
+                                           asp-route-visitId="@visit.Id">
+                                            @visit.PatientId
+                                        </a>
+                                    </td>
+
+                                    <td>@visit.VisitDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@visit.Patient?.FullName</td>
+                                    <td>
+                                        @(doctorUserId == currentUserId ? "Me" : visit.Doctor?.FullName)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+				</div>
+			</div>
+		</div>
+	</div>
+  
+}

@@ -1,0 +1,80 @@
+﻿@model CMS.ViewModels.RegisterViewModel
+
+
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="container mt-5">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0 ">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-register-image bg-primary">
+                    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                        <h3 class="text-white fw-bold m-0">Clinic Management System</h3>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                        </div>
+                        <form asp-action="Register" method="post" class="user">
+                            @Html.AntiForgeryToken()
+							<div class="form-group">
+								<input asp-for="Name" type="text" class="form-control form-control-user" id="exampleFirstName"
+									   placeholder="Name">
+                                <span asp-validation-for="Name" class="small text-danger"></span>
+
+							</div>
+                            <div class="form-group">
+                                <input asp-for="Email" type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                       placeholder="Email Address">
+                                <span asp-validation-for="Email" class="small text-danger"></span>
+
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input asp-for="Password" type="password" class="form-control form-control-user"
+                                           id="exampleInputPassword" placeholder="Password">
+                                    <span asp-validation-for="Password" class="small text-danger"></span>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control form-control-user"
+                                           id="exampleRepeatPassword" placeholder="Confirm Password">
+                                    <span asp-validation-for="ConfirmPassword" class="small text-danger"></span>
+
+                                </div>
+                            </div>
+                            <div asp-validation-summary="ModelOnly" class="small"></div>
+
+                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                                Register Account
+                            </button>
+                        </form>
+                        <hr>
+                       <div class="d-flex justify-content-between">
+                            <div class="text-center">
+                                <a asp-action="VerifyEmail" asp-controller="Account" class="small" >Forgot Password?</a>
+                            </div>
+                            <div class="text-center">
+                                <a asp-action="Login" asp-controller="Account" class="small" >Already have an account? Login!</a>
+                            </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}

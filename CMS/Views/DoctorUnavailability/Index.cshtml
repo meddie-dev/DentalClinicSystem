@@ -1,0 +1,103 @@
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var tokens = Antiforgery.GetAndStoreTokens(Context);
+	var doctorId = ViewBag.DoctorId as int? ?? 0;
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h1 class="h3 mb-0 text-gray-800">My Availability</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white d-sm-flex align-items-center justify-content-between">
+			<div>
+				<strong>Note:</strong> If you are unavailable on a specific day, simply select the date and click <strong>"Save icon"</strong>.
+			</div>
+			<a id="saveUnavailable" style="cursor:pointer;"><i class="fas fa-save" style="color: #ffffff; font-size: 20px;"></i></a>
+		</div>
+		<div class="card-body">
+			<div id="calendar"></div>
+			@* <button class="btn btn-primary mt-3" id="saveUnavailable">Save Changes</button> *@
+		</div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const calendarEl = document.getElementById('calendar');
+		let unavailableDates = new Set();
+
+		const calendar = new FullCalendar.Calendar(calendarEl, {
+			initialView: 'multiMonthYear',
+			selectable: true,
+			dateClick: function (info) {
+				const date = info.dateStr;
+
+				if (unavailableDates.has(date)) {
+					unavailableDates.delete(date);
+					removeHighlight(date);
+				} else {
+					unavailableDates.add(date);
+					highlightDate(date);
+				}
+			},
+			events: '/DoctorUnavailability/GetEvents' // Optional: implement this if you want to show existing unavailable dates
+		});
+
+		function highlightDate(dateStr) {
+			const el = document.querySelector(`.fc-day[data-date='${dateStr}']`);
+			if (el) el.style.backgroundColor = '#f8d7da';
+		}
+
+		function removeHighlight(dateStr) {
+			const el = document.querySelector(`.fc-day[data-date='${dateStr}']`);
+			if (el) el.style.backgroundColor = '';
+		}
+
+		document.getElementById('saveUnavailable').addEventListener('click', () => {
+			fetch('/DoctorUnavailability/UpdateUnavailableDates', {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+					'RequestVerificationToken': '@tokens.RequestToken'
+				},
+				body: JSON.stringify({
+					doctorId: @doctorId,
+					unavailableDates: Array.from(unavailableDates)
+
+				})
+			})
+		.then(res => {
+			if (res.ok) {
+				alert('Unavailable dates saved.');
+			} else {
+				res.text().then(msg => {
+					console.error("Server response:", msg);
+					alert('Failed to save: ' + msg);
+				});
+			}
+			});
+
+		});
+
+		fetch(`/DoctorUnavailability/GetEvents?doctorId=${@doctorId}`)
+		.then(res => res.json())
+		.then(data => {
+			data.forEach(date => {
+				unavailableDates.add(date);
+				highlightDate(date);
+			});
+		});
+
+		calendar.render();
+	});
+</script>

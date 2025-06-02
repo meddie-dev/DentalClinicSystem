@@ -1,0 +1,55 @@
+﻿@model IEnumerable<CMS.Models.Patient>
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+		<h1 class="h3 mb-0 text-gray-800">Manage Archived Patient</h1>
+	</div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">Archived Patient Records</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => ((CMS.Models.Patient)Model.FirstOrDefault()).FullName)</th>
+                            <th>@Html.DisplayNameFor(model => ((CMS.Models.Patient)Model.FirstOrDefault()).DateOfBirth)</th>
+                            <th>@Html.DisplayNameFor(model => ((CMS.Models.Patient)Model.FirstOrDefault()).Gender)</th>
+                            <th>@Html.DisplayNameFor(model => ((CMS.Models.Patient)Model.FirstOrDefault()).ContactNumber)</th>
+                            <th>@Html.DisplayNameFor(model => ((CMS.Models.Patient)Model.FirstOrDefault()).Address)</th>
+                            <th>@Html.DisplayNameFor(model => ((CMS.Models.Patient)Model.FirstOrDefault()).CreatedAt)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="text-primary">
+                                        @Html.DisplayFor(modelItem => item.FullName)
+                                    </a>
+                                </td>
+                                <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                <td>@Html.DisplayFor(modelItem => item.Gender)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ContactNumber)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                                <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

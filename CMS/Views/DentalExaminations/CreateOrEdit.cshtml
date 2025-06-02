@@ -1,0 +1,60 @@
+﻿@model CMS.Models.DentalExamination
+@{
+    bool isEdit = (bool)(ViewData["IsEdit"] ?? false);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+        <h1 class="h3 mb-0 text-gray-800">@(isEdit ? "Edit" : "Create") Dental Examination</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">Dental examination @(isEdit ? "information" : "creation")</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-2">
+                All fields are required. Kindly fill out the form completely before clicking <strong>@(isEdit ? "Save" : "Create") </strong>.
+            </p>
+            <div class="table-responsive">
+                <form asp-action="CreateOrEdit" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <input type="hidden" asp-for="PatientId" />
+                    <input type="hidden" asp-for="VisitId" />
+
+                    <div class="form-group">
+                        <label asp-for="ExaminationDate"></label>
+                        <input asp-for="ExaminationDate" class="form-control" type="date" />
+                        <span asp-validation-for="ExaminationDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Notes"></label>
+                        <textarea asp-for="Notes" class="form-control"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                   <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary mr-2">@(isEdit ? "Save" : "Create")</button>
+                        <a asp-controller="DentalExaminations" asp-action="Index" class="btn btn-secondary">Cancel</a>
+                   </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

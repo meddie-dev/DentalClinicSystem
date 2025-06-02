@@ -1,0 +1,95 @@
+﻿@model CMS.Models.Patient
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Patient</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">Record new Patient.</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-4">
+                All fields are required. Kindly fill out the form completely before clicking <strong>Create</strong>.
+            </p>
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label asp-for="FullName" class="control-label">Full Name</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Name" />
+                            <span asp-validation-for="FullName" class="small text-danger"></span>
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="form-group">
+                            <label asp-for="DateOfBirth" class="control-label">Date of Birth</label>
+                            <input asp-for="DateOfBirth" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                            <span asp-validation-for="DateOfBirth" class="small text-danger"></span>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group">
+                            <label asp-for="Gender" class="control-label">Gender</label>
+                            <select asp-for="Gender" class="form-control" asp-items="@(new SelectList(new[] { "Male", "Female" }))">
+                                <option value="">-- Select Gender --</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="small text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Contact Number -->
+                        <div class="form-group">
+                            <label asp-for="ContactNumber" class="control-label">Contact Number</label>
+                            <input asp-for="ContactNumber" class="form-control" placeholder="-" />
+                            <span asp-validation-for="ContactNumber" class="small text-danger"></span>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group">
+                            <label asp-for="Address" class="control-label">Address</label>
+                            <input asp-for="Address" class="form-control" placeholder="Address" />
+                            <span asp-validation-for="Address" class="small text-danger"></span>
+                        </div>
+
+                        <!-- Hidden CreatedAt -->
+                        <input type="hidden" asp-for="CreatedAt" />
+
+                        <!-- IsArchived -->
+                        <div class="form-group form-check mt-3">
+                            <input class="form-check-input" asp-for="IsArchived" />
+                            <label class="form-check-label" asp-for="IsArchived">
+                                @Html.DisplayNameFor(model => model.IsArchived)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-group mt-4 d-flex justify-content-between flex-row-reverse">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary ml-2">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

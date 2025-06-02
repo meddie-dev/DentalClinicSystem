@@ -1,0 +1,95 @@
+﻿@model IEnumerable<CMS.Models.Appointment>
+
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+		@if (User.IsInRole("Doctor"))
+		{
+			<h1 class="h3 mb-0 text-gray-800">My Appointments</h1>
+		}else
+		{
+			<h1 class="h3 mb-0 text-gray-800">Book Appointments</h1>
+
+		}
+
+		@if (!User.IsInRole("Doctor"))
+		{
+			<a asp-action="Create" asp-controller="Appointments" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+				<i class="fa fa-plus pr-1 py-1" aria-hidden="true"></i>
+				Create New
+			</a>
+		}
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Appointment Records </h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>@Html.DisplayNameFor(model => model.Patient)</th>
+							<th>@Html.DisplayNameFor(model => model.AppointmentDate)</th>
+							<th>@Html.DisplayNameFor(model => model.Notes)</th>
+							<th>@Html.DisplayNameFor(model => model.Status)</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						@foreach (var item in Model)
+						{
+							var isToday = item.AppointmentDate.Date == DateTime.Today && item.Status != AppointmentStatus.NoShow; ;
+							var rowStyle = isToday ? "background-color: #f7fcf9;" : ""; // Light green
+
+							<tr style="@rowStyle">
+								<td>
+									<a asp-action="Details" asp-route-id="@item.Id" class="text-primary">
+										@Html.DisplayFor(modelItem => item.Patient.FullName)
+									</a>
+								</td>
+								<td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+								<td>@Html.DisplayFor(modelItem => item.Notes)</td>
+								@{
+									string statusColor = "black";
+
+									switch (item.Status)
+									{
+										case AppointmentStatus.Pending:
+											statusColor = "orange";
+											break;
+										case AppointmentStatus.Completed:
+											statusColor = "green";
+											break;
+										case AppointmentStatus.NoShow:
+											statusColor = "red";
+											break;
+										case AppointmentStatus.Cancelled:
+											statusColor = "gray";
+											break;
+									}
+								}
+								<td style="color:@statusColor">
+									@Html.DisplayFor(modelItem => item.Status)
+								</td>
+							</tr>
+						}
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+

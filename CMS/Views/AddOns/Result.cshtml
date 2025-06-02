@@ -1,0 +1,31 @@
+﻿@model IEnumerable<CMS.Models.Appointment>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">AI Tool</h5>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.SimplifiedText != null)
+            {
+                <h4 class="mb-3">🩺 Doctor's Instructions</h4>
+                <div class="border p-3 rounded bg-light" style="white-space: pre-line; font-family: 'Segoe UI', sans-serif;">
+                    @Html.Raw(ViewBag.SimplifiedText.Replace("\n", "<br />"))
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No result available.</p>
+            }
+        </div>
+
+    </div>
+</div>

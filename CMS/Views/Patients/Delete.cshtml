@@ -1,0 +1,58 @@
+﻿@model CMS.Models.Patient
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h1 class="h3 mb-0 text-gray-800">Delete Patient</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Are you sure to delete (@Html.DisplayFor(model => model.FullName)) data?.</h5>
+		</div>
+
+		<div class="card-body">
+			<p class="text-muted mb-4">
+				Review the patient's information below. To make changes, click the <strong>Delete</strong> button.
+			</p>
+
+			<dl class="row">
+				<dt class="col-sm-3">Full Name</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.FullName)</dd>
+
+				<dt class="col-sm-3">Date of Birth</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.DateOfBirth)</dd>
+
+				<dt class="col-sm-3">Gender</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.Gender)</dd>
+
+				<dt class="col-sm-3">Contact Number</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.ContactNumber)</dd>
+
+				<dt class="col-sm-3">Address</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.Address)</dd>
+
+				<dt class="col-sm-3">Archived</dt>
+				<dd class="col-sm-9">@((Model.IsArchived) ? "Yes" : "No")</dd>
+
+				<dt class="col-sm-3">Created At</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedAt)</dd>
+			</dl>
+
+			<form asp-action="Delete" class="d-flex justify-content-between mt-4">
+				<input type="hidden" asp-for="Id" />
+				<a asp-action="Index" class="btn btn-outline-secondary">
+					<i class="fas fa-arrow-left"></i> Back to List
+				</a> 
+				<input type="submit" value="Delete" class="btn btn-danger" />
+			</form>
+		</div>
+	</div>
+</div>
+
+

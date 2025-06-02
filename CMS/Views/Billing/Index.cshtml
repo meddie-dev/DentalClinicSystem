@@ -1,0 +1,48 @@
+﻿@model List<CMS.ViewModels.BillingViewModel>
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+		<h1 class="h3 mb-0 text-gray-800">Billing Records</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Bills</h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Patient</th>
+							<th>Invoice Date</th>
+							<th>Total Amount</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var billing in Model)
+						{
+							<tr>
+								<td>
+									<a asp-action="Details" asp-route-examId="@billing.DentalExaminationId" class="text-primary">@billing.PatientName</a>
+								</td>
+								<td>@billing.InvoiceDate.ToShortDateString()</td>
+								<td>@billing.TotalAmount.ToString("C")</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+

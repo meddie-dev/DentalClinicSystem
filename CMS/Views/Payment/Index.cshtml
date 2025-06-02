@@ -1,0 +1,60 @@
+﻿@model List<CMS.Models.Billing>
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+    var payments = ViewBag.Payments as List<CMS.Models.Payment>;
+
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+		<h1 class="h3 mb-0 text-gray-800">Payment Records</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Manage Payment</h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+                <table class="table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var billing in Model)
+                        {
+                            var isPaid = payments?.Any(p => p.BillingId == billing.Id) ?? (billing.Payments != null && billing.Payments.Any());
+
+                            <tr>
+                                <td>@billing.Patient.FullName</td>
+                                <td>@billing.InvoiceDate.ToShortDateString()</td>
+                                <td>@billing.TotalAmount.ToString("C")</td>
+                                <td>
+                                    @if (isPaid)
+                                    {
+                                        <a asp-action="Details" asp-route-billingId="@billing.Id" class="text-primary">View Payment</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Create" asp-route-billingId="@billing.Id" class="text-primary">Make Payment</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+			</div>
+		</div>
+	</div>
+</div>

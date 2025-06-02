@@ -1,0 +1,27 @@
+﻿@model IEnumerable<CMS.Models.Appointment>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Topbar -->
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h5 class="m-0 font-weight-bold">AI Tool</h5>
+        </div>
+        <div class="card-body">
+            <h2>Upload Doctor's Prescription</h2>
+
+            <form asp-action="UploadImage" method="post" enctype="multipart/form-data">
+                <input type="file" name="prescriptionImage" />
+                <button type="submit">Upload</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+

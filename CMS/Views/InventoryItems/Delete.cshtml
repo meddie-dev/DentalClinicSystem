@@ -1,0 +1,49 @@
+﻿@model CMS.Models.InventoryItem
+
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("Components/Partials/_Topbar")
+
+<div class="container-fluid">
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h1 class="h3 mb-0 text-gray-800">Delete Item</h1>
+	</div>
+
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Are you sure to delete (@Html.DisplayFor(model => model.ItemName)) data?.</h5>
+		</div>
+
+		<div class="card-body">
+			<p class="text-muted mb-4">
+				Review the item's details below. To make changes, click the <strong>Delete</strong> button.
+			</p>
+
+			<dl class="row">
+				<dt class="col-sm-3">Item Name</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.ItemName)</dd>
+
+				<dt class="col-sm-3">Description</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+
+				<dt class="col-sm-3">Quantity</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.Quantity)</dd>
+
+				<dt class="col-sm-3">Last Updated</dt>
+				<dd class="col-sm-9">@Html.DisplayFor(model => model.LastUpdated)</dd>
+
+			</dl>
+
+			<form asp-action="Delete" class="d-flex justify-content-between mt-4">
+				<input type="hidden" asp-for="Id" />
+				<a asp-action="Index" class="btn btn-outline-secondary">
+					<i class="fas fa-arrow-left"></i> Back to List
+				</a> 
+				<input type="submit" value="Delete" class="btn btn-danger" />
+			</form>
+		</div>
+	</div>
+</div>

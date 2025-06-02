@@ -1,0 +1,202 @@
+﻿
+@{
+}
+
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-action="Index" asp-controller="Home">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-solid fa-tooth"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Sweet Tooth</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" asp-action="Index" asp-controller="Home">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    @if (!User.IsInRole("User"))
+    {
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Modules
+        </div>
+
+        @if (User.IsInRole("Doctor"))
+        {
+            <!-- Nav Item - Patient Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePatient"
+                   aria-expanded="true" aria-controls="collapsePatient">
+                    <i class="fas fa-fw fa-solid fa-users"></i>
+                    <span>Patient Management</span>
+                </a>
+                <div id="collapsePatient" class="collapse" aria-labelledby="headingPatient" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Index" asp-controller="Patients">My Patients</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Appointments Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
+                   aria-expanded="true" aria-controls="collapseAppointments">
+                    <i class="fas fa-fw fa-solid fa-calendar"></i>
+                    <span>Appointments</span>
+                </a>
+                <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Index" asp-controller="Appointments">My Appointments</a>
+                        <a class="collapse-item" asp-action="Index" asp-controller="DoctorUnavailability">My Availability</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Consultation Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConsultation"
+                aria-expanded="true" aria-controls="collapseConsultation">
+                    <i class="fas fa-fw fa-solid fa-stethoscope"></i>
+                    <span>Consultation</span>
+                </a>
+                <div id="collapseConsultation" class="collapse" aria-labelledby="headingConsultation"
+                data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Index" asp-controller="DentalExaminations">Dental Examination</a>
+                        <a class="collapse-item" asp-action="Index" asp-controller="Prescription">Prescription</a>
+                    </div>
+                </div>
+            </li>
+        }
+
+        @if (!User.IsInRole("Doctor"))
+        {
+            <!-- Nav Item - Patient Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePatient"
+                   aria-expanded="true" aria-controls="collapsePatient">
+                    <i class="fas fa-fw fa-solid fa-users"></i>
+                    <span>Patient Management</span>
+                </a>
+                <div id="collapsePatient" class="collapse" aria-labelledby="headingPatient" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Index" asp-controller="Patients">Manage Patients</a>
+                        <a class="collapse-item" asp-action="IsArchived" asp-controller="Patients">Archived Patients</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Appointments Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
+                   aria-expanded="true" aria-controls="collapseAppointments">
+                    <i class="fas fa-fw fa-solid fa-calendar"></i>
+                    <span>Appointments</span>
+                </a>
+                <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Index" asp-controller="Appointments">Book Appointments</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Billing Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBilling"
+                   aria-expanded="true" aria-controls="collapseBilling">
+                    <i class="fas fa-fw fa-solid fa-cash-register"></i>
+                    <span>Billing/Payment</span>
+                </a>
+                <div id="collapseBilling" class="collapse" aria-labelledby="headingBilling"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Index" asp-controller="Billing">Billing</a>
+                        <a class="collapse-item" asp-action="Index" asp-controller="Payment">Payment</a>
+                    </div>
+                </div>
+            </li>
+        }
+
+        @if (User.IsInRole("Admin"))
+        {
+            <!-- Nav Item - Inventory Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory"
+                aria-expanded="true" aria-controls="collapseInventory">
+                    <i class="fas fa-fw fa-solid fa-pills"></i>
+                    <span>Inventory</span>
+                </a>
+                <div id="collapseInventory" class="collapse" aria-labelledby="headingInventory"
+                data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Index" asp-controller="InventoryItems">Manage Inventory</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Audit Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAudit"
+                aria-expanded="true" aria-controls="collapseAudit">
+                    <i class="fas fa-fw fa-solid fa-file-invoice"></i>
+                    <span>Audit Management</span>
+                </a>
+                <div id="collapseAudit" class="collapse" aria-labelledby="headingAudit"
+                data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="Logs" asp-controller="Audit">Inventory Audit</a>
+                        <a class="collapse-item" asp-action="UserList" asp-controller="Audit">User Audit</a>
+                    </div>
+                </div>
+            </li>
+        }
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+    }
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Addons
+    </div>
+
+    <!-- Nav Item - Calendar -->
+    <li class="nav-item">
+        <a class="nav-link" asp-action="Calendar" asp-controller="AddOns">
+            <i class="fas fa-fw fa-solid fa-calendar-week"></i>
+            <span>Calendar</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - AI Tool -->
+    <li class="nav-item">
+        <a class="nav-link" asp-action="AiTool" asp-controller="AddOns">
+            <i class="fas fa-fw fa-solid fa-receipt"></i>
+            <span>AI Tools</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+<!-- End of Sidebar -->
