@@ -2,7 +2,7 @@
 
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
-    var payments = ViewBag.Payments as List<CMS.Models.Payment>;
+	var payments = ViewBag.Payments as List<CMS.Models.Payment>;
 
 }
 
@@ -21,38 +21,38 @@
 		</div>
 		<div class="card-body">
 			<div class="table-responsive">
-                <table class="table" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th>Patient</th>
-                            <th>Date</th>
-                            <th>Total</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var billing in Model)
-                        {
-                            var isPaid = payments?.Any(p => p.BillingId == billing.Id) ?? (billing.Payments != null && billing.Payments.Any());
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Patient</th>
+							<th>Date</th>
+							<th>Total</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var billing in Model)
+						{
+							var isPaid = payments?.Any(p => p.BillingId == billing.Id) ?? (billing.Payments != null && billing.Payments.Any());
 
-                            <tr>
-                                <td>@billing.Patient.FullName</td>
-                                <td>@billing.InvoiceDate.ToShortDateString()</td>
-                                <td>@billing.TotalAmount.ToString("C")</td>
-                                <td>
-                                    @if (isPaid)
-                                    {
-                                        <a asp-action="Details" asp-route-billingId="@billing.Id" class="text-primary">View Payment</a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-action="Create" asp-route-billingId="@billing.Id" class="text-primary">Make Payment</a>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+							<tr>
+								<td>@billing.Patient.FullName</td>
+								<td>@billing.InvoiceDate.ToShortDateString()</td>
+								<td>@billing.TotalAmount.ToString("C")</td>
+								<td>
+									@if (isPaid)
+									{
+										<a asp-action="Details" asp-route-billingId="@billing.Id" class="text-primary">View Payment</a>
+									}
+									else
+									{
+										<a asp-action="Create" asp-route-billingId="@billing.Id" class="text-primary">Make Payment</a>
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
 
 			</div>
 		</div>

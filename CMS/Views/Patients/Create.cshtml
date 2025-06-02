@@ -26,21 +26,18 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <!-- Full Name -->
                         <div class="form-group">
                             <label asp-for="FullName" class="control-label">Full Name</label>
                             <input asp-for="FullName" class="form-control" placeholder="Name" />
                             <span asp-validation-for="FullName" class="small text-danger"></span>
                         </div>
 
-                        <!-- Date of Birth -->
                         <div class="form-group">
                             <label asp-for="DateOfBirth" class="control-label">Date of Birth</label>
                             <input asp-for="DateOfBirth" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
                             <span asp-validation-for="DateOfBirth" class="small text-danger"></span>
                         </div>
 
-                        <!-- Gender -->
                         <div class="form-group">
                             <label asp-for="Gender" class="control-label">Gender</label>
                             <select asp-for="Gender" class="form-control" asp-items="@(new SelectList(new[] { "Male", "Female" }))">
@@ -51,24 +48,20 @@
                     </div>
 
                     <div class="col-md-6">
-                        <!-- Contact Number -->
                         <div class="form-group">
                             <label asp-for="ContactNumber" class="control-label">Contact Number</label>
                             <input asp-for="ContactNumber" class="form-control" placeholder="-" />
                             <span asp-validation-for="ContactNumber" class="small text-danger"></span>
                         </div>
 
-                        <!-- Address -->
                         <div class="form-group">
                             <label asp-for="Address" class="control-label">Address</label>
                             <input asp-for="Address" class="form-control" placeholder="Address" />
                             <span asp-validation-for="Address" class="small text-danger"></span>
                         </div>
 
-                        <!-- Hidden CreatedAt -->
                         <input type="hidden" asp-for="CreatedAt" />
 
-                        <!-- IsArchived -->
                         <div class="form-group form-check mt-3">
                             <input class="form-check-input" asp-for="IsArchived" />
                             <label class="form-check-label" asp-for="IsArchived">
@@ -78,7 +71,6 @@
                     </div>
                 </div>
 
-                <!-- Submit -->
                 <div class="form-group mt-4 d-flex justify-content-between flex-row-reverse">
                     <input type="submit" value="Create" class="btn btn-primary" />
                     <a asp-action="Index" class="btn btn-secondary ml-2">Back to List</a>

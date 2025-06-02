@@ -20,45 +20,45 @@
 		</div>
 		<div class="card-body">
 			<div class="table-responsive">
-                <table class="table" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th>Patient</th>
-                            <th>Visit Date</th>
+				<table class="table" id="dataTable">
+					<thead>
+						<tr>
+							<th>Patient</th>
+							<th>Visit Date</th>
 							<th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       @foreach (var exam in Model)
-                        {
-                            <tr>
-                                 <td>
-                                    @if (!exam.BillingExists)
-                                    {
-                                        <a asp-action="Create" asp-route-examId="@exam.ExaminationId">@exam.PatientName</a>
-                                    }
-                                    else
-                                    {
-                                        <span style="color: gray; text-decoration: none;">@exam.PatientName</span>
-                                    }
-                                </td>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var exam in Model)
+						{
+							<tr>
+								<td>
+									@if (!exam.BillingExists)
+									{
+										<a asp-action="Create" asp-route-examId="@exam.ExaminationId">@exam.PatientName</a>
+									}
+									else
+									{
+										<span style="color: gray; text-decoration: none;">@exam.PatientName</span>
+									}
+								</td>
 
-                                <td>@exam.ExaminationDate.ToShortDateString()</td>
-                                <td>
-                                    @if (exam.BillingExists)
-                                    {
-                                        <a asp-action="Details" asp-route-examId="@exam.ExaminationId">Details</a>
+								<td>@exam.ExaminationDate.ToShortDateString()</td>
+								<td>
+									@if (exam.BillingExists)
+									{
+										<a asp-action="Details" asp-route-examId="@exam.ExaminationId">Details</a>
 
-                                    }
-                                    else
-                                    {
-                                        <span style="color: gray; text-decoration: none;">Details</span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+									}
+									else
+									{
+										<span style="color: gray; text-decoration: none;">Details</span>
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

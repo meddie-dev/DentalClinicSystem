@@ -1,67 +1,67 @@
 ﻿@model CMS.Models.Payment
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!-- Topbar -->
 @Html.Partial("Components/Partials/_Topbar")
 
 <div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4 ">
-        <h1 class="h3 mb-0 text-gray-800">Make Payment</h1>
-    </div>
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4 ">
+		<h1 class="h3 mb-0 text-gray-800">Make Payment</h1>
+	</div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-primary text-white">
-            <h5 class="m-0 font-weight-bold">Payment Form</h5>
-        </div>
-        <div class="card-body">
-            <form asp-action="Create" method="post">
-                <input type="hidden" asp-for="BillingId" />
-                <input type="hidden" id="TotalAmount" value="@Model.AmountPaid" />
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 bg-primary text-white">
+			<h5 class="m-0 font-weight-bold">Payment Form</h5>
+		</div>
+		<div class="card-body">
+			<form asp-action="Create" method="post">
+				<input type="hidden" asp-for="BillingId" />
+				<input type="hidden" id="TotalAmount" value="@Model.AmountPaid" />
 
-                <div class="form-group">
-                    <label>Total Amount</label>
-                    <input class="form-control" value="@Model.AmountPaid" readonly />
-                </div>
+				<div class="form-group">
+					<label>Total Amount</label>
+					<input class="form-control" value="@Model.AmountPaid" readonly />
+				</div>
 
-                <div class="form-group">
-                    <label asp-for="AmountPaid">Amount Given</label>
-                    <input asp-for="AmountPaid" class="form-control" id="AmountPaidInput" />
-                </div>
+				<div class="form-group">
+					<label asp-for="AmountPaid">Amount Given</label>
+					<input asp-for="AmountPaid" class="form-control" id="AmountPaidInput" />
+				</div>
 
-                <div class="form-group">
-                    <label>Change</label>
-                    <input class="form-control" id="Change" readonly />
-                </div>
+				<div class="form-group">
+					<label>Change</label>
+					<input class="form-control" id="Change" readonly />
+				</div>
 
-                <div class="form-group">
-                    <label asp-for="PaymentDate"></label>
-                    <input asp-for="PaymentDate" class="form-control" type="datetime-local" />
-                </div>
+				<div class="form-group">
+					<label asp-for="PaymentDate"></label>
+					<input asp-for="PaymentDate" class="form-control" type="datetime-local" />
+				</div>
 				<div class="d-flex justify-content-between mt-4">
 					<a asp-action="Index" class="btn btn-outline-secondary">
 						<i class="fas fa-arrow-left"></i> Back to List
 					</a>
-                    <button type="submit" class="btn btn-primary">Submit Payment</button>
+					<button type="submit" class="btn btn-primary">Submit Payment</button>
 				</div>
-               
-            </form>
 
-           
-        </div>
-    </div>
+			</form>
+
+
+		</div>
+	</div>
 </div>
 
-@section Scripts {
-    <script>
-        document.getElementById("AmountPaidInput").addEventListener("input", function () {
-            const total = parseFloat(document.getElementById("TotalAmount").value);
-            const paid = parseFloat(this.value);
-            const change = isNaN(paid) ? 0 : (paid - total);
-            document.getElementById("Change").value = change >= 0 ? change.toFixed(2) : "0.00";
-        });
-    </script>
-}
+
+<script>
+	document.getElementById("AmountPaidInput").addEventListener("input", function () {
+		const total = parseFloat(document.getElementById("TotalAmount").value);
+		const paid = parseFloat(this.value);
+		const change = isNaN(paid) ? 0 : (paid - total);
+		document.getElementById("Change").value = change >= 0 ? change.toFixed(2) : "0.00";
+	});
+</script>
+

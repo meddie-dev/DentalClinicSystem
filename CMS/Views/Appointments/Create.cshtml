@@ -93,12 +93,12 @@
        document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var dateInput = document.querySelector('input[name="AppointmentDate"]');
-        var doctorSelect = document.querySelector('select[name="DoctorId"]'); // Doctor dropdown
+        var doctorSelect = document.querySelector('select[name="DoctorId"]'); 
         let selectedDate = null;
         let tempEvent = null;
         let dateCountMap = {};
 
-        // Fetch counts once
+        
         fetch('/Appointments/GetAppointmentsJson')
             .then(res => res.json())
             .then(events => {
@@ -115,7 +115,7 @@
             })
             .catch(err => {
                 console.error('Failed to load appointment counts:', err);
-                initCalendar(); // still init calendar on error
+                initCalendar(); 
             });
 
         function initCalendar() {
@@ -137,12 +137,12 @@
                     document.getElementById('appointmentTime').value = '';
                     $('#timeModal').modal('show');
 
-                    // Clear doctor dropdown while waiting
+                    
                     if (doctorSelect) {
                         doctorSelect.innerHTML = '<option>Loading doctors...</option>';
                     }
 
-                    // Fetch available doctors for selected date
+                    
                     fetch(`/Appointments/GetAvailableDoctors?date=${selectedDate}`)
                         .then(res => res.json())
                         .then(doctors => {
